@@ -1,0 +1,32 @@
+body{
+    background-color: rgb(10, 10, 10) ;
+}
+
+.card-login{
+    min-width: 400px;
+    max-width: 500px;
+    background: rgba(24, 24, 24, 0.562);
+    border: 1px solid rgb(29, 29, 29);
+    border-radius: 22px;
+    padding: 25px;
+}
+
+.form-control{
+    background: rgb(0, 0, 0);
+    border: 1px solid rgb(29, 29, 29);
+    color: white;
+}
+
+.form-control::placeholder{
+    color: #ffffff;
+}
+
+.form-control:focus{
+    background-color: rgb(10, 10, 10);
+    color: white;
+}
+
+.btn {
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
