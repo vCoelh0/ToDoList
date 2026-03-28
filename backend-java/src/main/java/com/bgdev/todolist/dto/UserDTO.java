@@ -3,13 +3,16 @@ package com.bgdev.todolist.dto;
 import com.bgdev.todolist.entities.User;
 
 public class UserDTO {
-
+	
+	
+	private Long id;
 	private String name;
 	private String email;
 	private String password;
 
 	
-	public UserDTO(String name, String email, String password) {
+	public UserDTO(Long id, String name, String email, String password) {
+		this.id = id;
 		this.name = name;
 		this.email = email;
 		this.password = password;
@@ -20,6 +23,7 @@ public class UserDTO {
 	}
 	
 	public UserDTO(User entity) {
+		id = entity.getId();
 		name = entity.getName();
 		email = entity.getEmail();
 		password = entity.getPassword();
@@ -34,6 +38,10 @@ public class UserDTO {
 	}
 	public String getPassword() {
 		return password;
+	}
+
+	public Long getId() {
+		return id;
 	}
 	
 	
