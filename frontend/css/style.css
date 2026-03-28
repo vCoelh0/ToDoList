@@ -30,3 +30,22 @@ body{
     border-radius: 5px;
     margin-bottom: 15px;
 }
+
+.input-registro::placeholder {
+    color: rgb(77, 77, 77);
+}
+
+/* Remove cor do autofill (Chrome) */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 30px rgb(0, 0, 0) inset !important; /* mesma cor do seu input */
+    -webkit-text-fill-color: white !important;
+    caret-color: white;
+}
