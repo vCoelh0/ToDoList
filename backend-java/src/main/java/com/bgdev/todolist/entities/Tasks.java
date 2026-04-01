@@ -19,7 +19,7 @@ public class Tasks {
 	private String title;
 	private Boolean completed;
 	
-	 @ManyToOne
+	 	@ManyToOne
 	    @JoinColumn(name = "user_id")
 	    private User userId;
 	
