@@ -35,4 +35,8 @@ public class TasksService {
 			
 	}
 	
+	public void delete(Long id) {
+		taskRepository.deleteById(id);
+	}
+	
 }
