@@ -23,4 +23,25 @@ router.post("/register", async (req, res) => {
     }
 });
 
+router.post("/login", async (req, res) => {
+
+    try {
+
+        const data = await userService.login(req.body);
+
+        res.status(200).json(data);
+
+    } catch(err){
+
+        console.log(err);
+
+        res.status(401).json({
+            error: "Email ou senha inválidos"
+        });
+    }
+
+});
+
+
+
 module.exports = router;
