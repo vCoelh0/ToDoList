@@ -9,12 +9,15 @@ async function verificarSessao() {
                 credentials: "include"
             }
         );
-
         if (response.ok) {
 
             const usuario = await response.json();
 
-            console.log("Usuário logado:", usuario.name);
+            document.getElementById("user-name").textContent =
+                `Olá, ${usuario.name}`;
+
+            document.getElementById("user-avatar")
+                .textContent = usuario.name.charAt(0).toUpperCase();
 
             return true;
         }
@@ -111,6 +114,15 @@ async function criarTarefa() {
     }
 }
 
+const logoutBtn =
+    document.getElementById("logout-btn");
+
+logoutBtn.addEventListener(
+    "click",
+    logout
+);
+
+
 
 function adicionarNaTela(task) {
 
@@ -193,7 +205,7 @@ async function concluirTarefa(id) {
             }
         );
 
-        if(response.ok){
+        if (response.ok) {
 
             await carregarTarefas();
 
@@ -202,7 +214,7 @@ async function concluirTarefa(id) {
             alert("Erro ao concluir tarefa");
         }
 
-    } catch(error){
+    } catch (error) {
 
         console.error(error);
     }
@@ -227,5 +239,54 @@ async function iniciarPagina() {
         await carregarTarefas();
     }
 }
+
+async function logout() {
+
+    try {
+
+        const response = await fetch(
+            "http://localhost:8080/logout",
+            {
+                method: "POST",
+                credentials: "include"
+            }
+        );
+
+        if (response.ok) {
+
+            window.location.href = "login.html";
+        }
+
+    } catch (error) {
+
+        console.error(error);
+    }
+}
+
+document.getElementById("logout-btn")
+    .addEventListener("click", async () => {
+
+        try {
+
+            await fetch(
+                "http://localhost:8080/logout",
+                {
+                    method: "POST",
+                    credentials: "include"
+                }
+            );
+
+            window.location.href = "login.html";
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert("Erro ao realizar logout");
+        }
+    });
+
+
+
 
 iniciarPagina();
