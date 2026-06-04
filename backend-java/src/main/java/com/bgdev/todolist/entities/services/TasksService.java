@@ -29,6 +29,7 @@ public class TasksService {
 		Tasks task = new Tasks();
 		
 		task.setTitle(dto.getTitle());
+		task.setCompleted(dto.getCompleted());
 		
 		task.setUserId(user);
 		task = taskRepository.save(task);
@@ -52,6 +53,23 @@ public class TasksService {
 	                .map(TasksDTO::new)
 	                .toList();
 	    }
+	    
+	    public TasksDTO toggleCompleted(Long taskId, Long userId) {
+
+	        Tasks task = taskRepository.findById(taskId)
+	                .orElseThrow(() -> new RuntimeException("Tarefa não encontrada"));
+
+	        if(!task.getUserId().getId().equals(userId)) {
+	            throw new RuntimeException("Acesso negado");
+	        }
+
+	        task.setCompleted(!task.getCompleted());
+
+	        task = taskRepository.save(task);
+
+	        return new TasksDTO(task);
+	    }
+	    
 
 	}
 	

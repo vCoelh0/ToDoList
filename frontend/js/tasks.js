@@ -1,188 +1,231 @@
+async function verificarSessao() {
 
-    async function verificarSessao() {
+    try {
 
-        try {
-
-            const response = await fetch(
-                "http://localhost:8080/logged-user",
-                {
-                    method: "GET",
-                    credentials: "include"
-                }
-            );
-
-            if(response.ok){
-
-                const usuario = await response.json();
-
-                console.log("Usuário logado:", usuario.name);
-
-                return true;
+        const response = await fetch(
+            "http://localhost:8080/logged-user",
+            {
+                method: "GET",
+                credentials: "include"
             }
+        );
 
-            window.location.href = "login.html";
-            return false;
+        if (response.ok) {
 
-        } catch(error){
+            const usuario = await response.json();
 
-            console.error(error);
+            console.log("Usuário logado:", usuario.name);
 
-            window.location.href = "login.html";
-
-            return false;
+            return true;
         }
+
+        window.location.href = "login.html";
+        return false;
+
+    } catch (error) {
+
+        console.error(error);
+
+        window.location.href = "login.html";
+
+        return false;
+    }
+}
+
+
+async function carregarTarefas() {
+
+    try {
+
+        const response = await fetch(
+            "http://localhost:8080/task",
+            {
+                method: "GET",
+                credentials: "include"
+            }
+        );
+
+        if (response.ok) {
+
+            const tasks = await response.json();
+
+            document.getElementById("task-list").innerHTML = "";
+
+            tasks.forEach(task => {
+                adicionarNaTela(task);
+            });
+        }
+
+    } catch (error) {
+
+        console.error(error);
+    }
+}
+
+
+async function criarTarefa() {
+
+    const title =
+        document.getElementById("task-input").value;
+
+    if (title.trim() === "") {
+
+        alert("Digite uma tarefa");
+        return;
     }
 
-  
-    async function carregarTarefas() {
+    try {
 
-        try {
+        const response = await fetch(
+            "http://localhost:8080/task",
+            {
+                method: "POST",
+                credentials: "include",
 
-            const response = await fetch(
-                "http://localhost:8080/task",
-                {
-                    method: "GET",
-                    credentials: "include"
-                }
-            );
+                headers: {
+                    "Content-Type": "application/json"
+                },
 
-            if(response.ok){
-
-                const tasks = await response.json();
-
-                document.getElementById("task-list").innerHTML = "";
-
-                tasks.forEach(task => {
-                    adicionarNaTela(task);
-                });
+                body: JSON.stringify({
+                    title: title
+                })
             }
+        );
 
-        } catch(error){
+        if (response.ok) {
 
-            console.error(error);
+            document.getElementById("task-input").value = "";
+
+            await carregarTarefas();
+
+        } else {
+
+            alert("Erro ao criar tarefa");
         }
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert("Erro ao conectar com servidor");
     }
+}
 
-    
-    async function criarTarefa() {
 
-        const title =
-            document.getElementById("task-input").value;
+function adicionarNaTela(task) {
 
-        if(title.trim() === ""){
-            alert("Digite uma tarefa");
-            return;
-        }
+    const ul =
+        document.getElementById("task-list");
 
-        try {
+    const li =
+        document.createElement("li");
 
-            const response = await fetch(
-                "http://localhost:8080/task",
-                {
-                    method: "POST",
-                    credentials: "include",
+    li.className =
+        `task-card ${task.completed ? "done" : ""} p-3`;
 
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
+    li.innerHTML = `
+        <span class="task-text fw-semibold text-white">
+            ${task.title}
+        </span>
 
-                    body: JSON.stringify({
-                        title: title
-                    })
-                }
-            );
-
-            if(response.ok){
-
-                document.getElementById("task-input").value = "";
-
-                await carregarTarefas();
-
-            } else {
-
-                alert("Erro ao criar tarefa");
-            }
-
-        } catch(error){
-
-            console.error(error);
-
-            alert("Erro ao conectar com servidor");
-        }
-    }
-
-   
-    function adicionarNaTela(task){
-
-        const ul =
-            document.getElementById("task-list");
-
-        const li =
-            document.createElement("li");
-
-        li.className =
-            "list-group-item d-flex justify-content-between align-items-center";
-
-        li.innerHTML = `
-            <span>${task.title}</span>
+        <div class="task-actions d-flex gap-2">
 
             <button
-                class="btn btn-danger btn-sm"
-                onclick="excluirTarefa(${task.id})">
-                <i class="bi bi-trash"></i>
+                type="button"
+                class="btn btn-success"
+                onclick="concluirTarefa(${task.id})">
+
+                <i class="bi bi-check"></i>
             </button>
-        `;
 
-        ul.appendChild(li);
-    }
+            <button
+                type="button"
+                class="btn btn-danger"
+                onclick="excluirTarefa(${task.id})">
 
-   
-    async function excluirTarefa(id){
+                <i class="bi bi-trash-fill"></i>
+            </button>
 
-        try {
+        </div>
+    `;
 
-            const response = await fetch(
-                `http://localhost:8080/task/${id}`,
-                {
-                    method: "DELETE",
-                    credentials: "include"
-                }
-            );
+    ul.appendChild(li);
+}
 
-            if(response.ok){
 
-                carregarTarefas();
+async function excluirTarefa(id) {
 
-            } else {
+    try {
 
-                alert("Erro ao excluir");
+        const response = await fetch(
+            `http://localhost:8080/task/${id}`,
+            {
+                method: "DELETE",
+                credentials: "include"
             }
+        );
 
-        } catch(error){
+        if (response.ok) {
 
-            console.error(error);
+            await carregarTarefas();
+
+        } else {
+
+            alert("Erro ao excluir");
         }
+
+    } catch (error) {
+
+        console.error(error);
     }
+}
 
-   
-    const addTaskBtn =
-        document.getElementById("add-task-btn");
 
-    addTaskBtn.addEventListener(
-        "click",
-        criarTarefa
-    );
+async function concluirTarefa(id) {
 
-    
-    async function iniciarPagina(){
+    try {
 
-        const logado =
-            await verificarSessao();
+        const response = await fetch(
+            `http://localhost:8080/task/${id}/complete`,
+            {
+                method: "PUT",
+                credentials: "include"
+            }
+        );
 
-        if(logado){
-            carregarTarefas();
+        if(response.ok){
+
+            await carregarTarefas();
+
+        } else {
+
+            alert("Erro ao concluir tarefa");
         }
+
+    } catch(error){
+
+        console.error(error);
     }
+}
 
-    iniciarPagina();
 
+const addTaskBtn =
+    document.getElementById("add-task-btn");
+
+addTaskBtn.addEventListener(
+    "click",
+    criarTarefa
+);
+
+
+async function iniciarPagina() {
+
+    const logado =
+        await verificarSessao();
+
+    if (logado) {
+        await carregarTarefas();
+    }
+}
+
+iniciarPagina();

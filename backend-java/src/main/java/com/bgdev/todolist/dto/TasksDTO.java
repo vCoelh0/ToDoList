@@ -7,7 +7,7 @@ public class TasksDTO {
 
 	private Long id;
 	private String title;
-	private Boolean completed;
+	private Boolean completed = false;
 	private User userId;
 	
 	public TasksDTO() {
