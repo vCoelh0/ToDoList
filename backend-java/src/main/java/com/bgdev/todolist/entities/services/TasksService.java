@@ -1,5 +1,7 @@
 package com.bgdev.todolist.entities.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,4 +41,18 @@ public class TasksService {
 		taskRepository.deleteById(id);
 	}
 	
-}
+	
+
+	    public List<TasksDTO> findByUser(Long userId) {
+
+	        List<Tasks> tasks =
+	                taskRepository.findByUserId_Id(userId);
+
+	        return tasks.stream()
+	                .map(TasksDTO::new)
+	                .toList();
+	    }
+
+	}
+	
+
